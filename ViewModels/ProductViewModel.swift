@@ -11,7 +11,7 @@ import RxSwift
 
 class ProductViewModel {
     
-    var rowIndex : Int = 10
+    var rowIndex : Int = 20
     
     typealias CollectionViewCellParameter = (imageUrl: String, productName: String, price: String)
     let productsObservable = BehaviorSubject<[CollectionViewCellParameter]>(value: [])
