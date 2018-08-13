@@ -18,8 +18,6 @@ class ProductViewModel {
     let apiClient = NetworkingAPIClient()
     let disposeBag = DisposeBag()
     
-    var products: [CollectionViewCellParameter] = []
-    
     private static var instance: ProductViewModel? = nil
     static var sharedInstance: ProductViewModel {
         if instance == nil {
@@ -33,8 +31,6 @@ class ProductViewModel {
     
     func getInitialDataFromAPI(pMin: String = "0.0", pMax: String = "1000000.0", wholesale: Bool = true, official: Bool = true, fShop: String = "2", start: String = "0", rows: String = "10")
     {
-        
-        self.products.removeAll()
         var req = RequestModel()
         req.pmin = pMin
         req.pmax = pMax

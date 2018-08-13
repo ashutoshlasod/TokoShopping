@@ -56,6 +56,7 @@ class ProductViewController: UIViewController {
         .disposed(by: disposeBag)
         
         self.productCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
+        self.productCollectionView.prefetchDataSource = self
         
         self.productCollectionView.rx.didEndDragging
             .subscribe(onNext: { [unowned self] _ in
@@ -69,7 +70,22 @@ class ProductViewController: UIViewController {
     }
 }
 
-extension ProductViewController: UICollectionViewDelegateFlowLayout {
+extension ProductViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            do {
+                let dataSourceCount = try self.viewModel.productsObservable.value().count
+                if(indexPath.row == dataSourceCount - 7) {
+                    self.viewModel.rowIndex += 10
+                    self.viewModel.getInitialDataFromAPI(pMin: "\(FilterDataManager.minPrice)", pMax: "\(FilterDataManager.maxPrice)", wholesale: FilterDataManager.isWholesale, rows: "\(self.viewModel.rowIndex)")
+                    break
+                }
+            } catch {
+                print("Fetching error")
+            }
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: (Constant.SCREEN_WIDTH/2)-5, height: 300.0)
     }
